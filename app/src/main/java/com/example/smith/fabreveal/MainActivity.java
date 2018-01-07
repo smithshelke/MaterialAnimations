@@ -23,11 +23,12 @@ import android.view.animation.Interpolator;
 import android.widget.Toast;
 
 import static android.graphics.Color.TRANSPARENT;
+import static android.view.View.VISIBLE;
 
 public class MainActivity extends AppCompatActivity {
     FloatingActionButton fab;
     DisplayMetrics dp;
-    View reveal;
+    View reveal, topPanel;
     boolean isCancel;
     float finalX, finalY, startX, startY;
 
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         reveal = findViewById(R.id.reveal);
+        topPanel = findViewById(R.id.topPanel);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         dp = getResources().getDisplayMetrics();
         finalX = dp.widthPixels / 2 - (dp.density * 56) / 2;
@@ -69,8 +71,19 @@ public class MainActivity extends AppCompatActivity {
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
                     reveal.setVisibility(View.VISIBLE);
-                    reveal.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-                    Animator animator1 = ViewAnimationUtils.createCircularReveal(reveal, reveal.getWidth() / 2, (int) (finalY - reveal.getY() + dp.density * 56 / 2), dp.density * 56 / 2, reveal.getWidth());
+                    reveal.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    Animator animator1 = ViewAnimationUtils.createCircularReveal(reveal, reveal.getWidth() / 2, (int) (finalY - reveal.getY() + dp.density * 56 / 2), dp.density * 56 / 2, reveal.getHeight() * .7f);
+                    topPanel.setScaleY(0f);
+                    topPanel.setVisibility(VISIBLE);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            topPanel.animate()
+                                    .scaleY(1f)
+                                    .setDuration(200)
+                                    .start();
+                        }
+                    }, 200);
                     animator1.start();
                 }
             });
@@ -82,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void returnFabToInitialPosition(View view) {
         isCancel = false;
-        Animator reset = ViewAnimationUtils.createCircularReveal(reveal, (int) (finalX + dp.density * 56 / 2), (int) (finalY - reveal.getY() + dp.density * 56 / 2), reveal.getWidth() * .7f, dp.density * 56 / 2);
+        Animator reset = ViewAnimationUtils.createCircularReveal(reveal, (int) (finalX + dp.density * 56 / 2), (int) (finalY - reveal.getY() + dp.density * 56 / 2), reveal.getHeight() * .5f, dp.density * 56 / 2);
         reset.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -111,6 +124,9 @@ public class MainActivity extends AppCompatActivity {
                 }, 1000);
             }
         });
+        topPanel.setScaleY(1f);
+        topPanel.setVisibility(View.INVISIBLE);
+
         reset.start();
     }
 }

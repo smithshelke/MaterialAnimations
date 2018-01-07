@@ -15,8 +15,17 @@
         android:layout_margin="16dp"
         android:onClick="animate"
         android:src="@drawable/ic_add_black_24dp"
-        app:backgroundTint="@color/colorPrimaryDark"
+        app:backgroundTint="@color/colorPrimary"
         app:fabSize="normal" />
+
+    <View
+        android:id="@+id/topPanel"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_above="@+id/reveal"
+        android:background="@color/colorPrimaryDark"
+        android:transformPivotY="64dp"
+        android:visibility="invisible" />
 
     <View
         android:id="@+id/reveal"
