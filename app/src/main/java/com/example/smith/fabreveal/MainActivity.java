@@ -39,32 +39,14 @@ public class MainActivity extends AppCompatActivity {
         fab = (FloatingActionButton) findViewById(R.id.fab);
         dp = getResources().getDisplayMetrics();
         finalX = dp.widthPixels / 2 - (dp.density * 56) / 2;
-        Log.i("finalX", String.valueOf(finalX));
         finalY = dp.heightPixels - dp.density * 250 - (dp.density * 56) / 2;
-        Toast.makeText(this, "" + finalY, Toast.LENGTH_SHORT).show();
-        if (reveal.getY() != dp.density * 300) {
-            float diff = dp.heightPixels - dp.density * 300;
-            Toast.makeText(this, "revealY: " + reveal.getY() + " || " + diff, Toast.LENGTH_SHORT).show();
-        }
-        Log.i("finalY", String.valueOf(finalY));
     }
 
     public void animate(final View view) {
-        Resources resources = this.getResources();
-        int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
-        float nav_size = resources.getDimensionPixelSize(resourceId);
-        float tot = nav_size+dp.density*(80);
-        float diff = dp.heightPixels - (dp.density * 300)-nav_size;
-
-        Toast.makeText(this, "revealY: " + reveal.getY() + " || " + diff, Toast.LENGTH_SHORT).show();
-
         if (!isCancel) {
             isCancel = true;
             startX = fab.getX();
-            Log.i("startX", String.valueOf(startX));
             startY = fab.getY();
-
-
             Log.i("startY", String.valueOf(startY));
             ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
             animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -87,13 +69,9 @@ public class MainActivity extends AppCompatActivity {
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
                     reveal.setVisibility(View.VISIBLE);
-                   /* fab.setBackgroundTintList(ColorStateList.valueOf(TRANSPARENT));
-                    fab.setElevation(0f);
-                    fab.setVisibility(View.INVISIBLE);*/
                     reveal.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                     Animator animator1 = ViewAnimationUtils.createCircularReveal(reveal, reveal.getWidth() / 2, (int) (finalY - reveal.getY() + dp.density * 56 / 2), dp.density * 56 / 2, reveal.getWidth());
                     animator1.start();
-                    //fab.setBackgroundTintList(ColorStateList.valueOf(TRANSPARENT));
                 }
             });
             animator.start();
@@ -104,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void returnFabToInitialPosition(View view) {
         isCancel = false;
-        Animator reset = ViewAnimationUtils.createCircularReveal(reveal,(int)(finalX+dp.density*56/2),(int) (finalY-reveal.getY()+dp.density*56/2),reveal.getWidth()*.7f,dp.density*56/2);
+        Animator reset = ViewAnimationUtils.createCircularReveal(reveal, (int) (finalX + dp.density * 56 / 2), (int) (finalY - reveal.getY() + dp.density * 56 / 2), reveal.getWidth() * .7f, dp.density * 56 / 2);
         reset.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -127,10 +105,10 @@ public class MainActivity extends AppCompatActivity {
                                 );
                             }
                         });
-                        //animator.setInterpolator(new AnticipateInterpolator(.8f));
+                        animator.setInterpolator(new AnticipateInterpolator(.8f));
                         animator.start();
                     }
-                },1000);
+                }, 1000);
             }
         });
         reset.start();
