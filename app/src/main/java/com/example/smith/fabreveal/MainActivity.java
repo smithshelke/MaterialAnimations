@@ -167,10 +167,15 @@ public class MainActivity extends AppCompatActivity {
                 .y(finalY)
                 .setDuration(200)
                 .start();
+        topPanel.animate()
+                .scaleY(0f)
+                .setDuration(200)
+                .start();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Animator reset = ViewAnimationUtils.createCircularReveal(reveal, (int) (finalX + dp.density * 56 / 2), (int) (finalY - reveal.getY() + dp.density * 56 / 2), reveal.getHeight() * .5f, dp.density * 56 / 2);
+                topPanel.setVisibility(View.INVISIBLE);
+                Animator reset = ViewAnimationUtils.createCircularReveal(reveal, (int) (finalX + dp.density * 56 / 2), (int) (finalY - reveal.getY() + dp.density * 56 / 2), reveal.getHeight() * .7f, dp.density * 56 / 2);
                 reset.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -203,9 +208,6 @@ public class MainActivity extends AppCompatActivity {
                         }, 1000);
                     }
                 });
-                topPanel.setScaleY(1f);
-                topPanel.setVisibility(View.INVISIBLE);
-
                 reset.start();
             }
         }, 200);
