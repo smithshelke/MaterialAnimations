@@ -8,6 +8,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -32,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton fab;
     DisplayMetrics dp;
     View reveal, topPanel;
-    ImageView addButton;
+    ImageView addButton, cancelButton;
+    CoordinatorLayout mCoordinatorLayout;
     LinearLayout bottomSheet;
     boolean isCancel;
     float finalX, finalY, startX, startY;
@@ -45,12 +47,15 @@ public class MainActivity extends AppCompatActivity {
         topPanel = findViewById(R.id.topPanel);
         bottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
         addButton = (ImageView) findViewById(R.id.addButton);
+        cancelButton = (ImageView) findViewById(R.id.cancelButton);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         dp = getResources().getDisplayMetrics();
         finalX = dp.widthPixels / 2 - (dp.density * 56) / 2;
         finalY = dp.heightPixels - dp.density * 250 - (dp.density * 56) / 2;
     }
 
+
+    //-----------fab and animations--------------
     public void animate(final View view) {
         if (!isCancel) {
             isCancel = true;
@@ -96,7 +101,13 @@ public class MainActivity extends AppCompatActivity {
                                     .x(dp.widthPixels / 2 + dp.widthPixels / 4 - dp.density * 56 / 2)
                                     .setDuration(300)
                                     .start();
-
+                            cancelButton.setImageResource(R.drawable.ic_close_black_24dp);
+                            cancelButton.setX(-500);
+                            // cancelButton.animate();
+                            cancelButton.animate()
+                                    .x(0)
+                                    .setDuration(300)
+                                    .start();
                         }
                     }, 200);
                     new Handler().postDelayed(new Runnable() {
@@ -145,6 +156,8 @@ public class MainActivity extends AppCompatActivity {
         isCancel = false;
         bottomSheet.setVisibility(View.INVISIBLE);
         addButton.setImageResource(0);
+        fab.setVisibility(VISIBLE);
+
         // reveal.setBackgroundColor(getResources().getColor(R.color.colorAccent));
         fab.animate()
                 .x(dp.widthPixels / 2 - dp.density * 56 / 2)
@@ -165,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
                         reveal.setVisibility(View.INVISIBLE);
                         //  fab.setX(finalX);
                         // fab.setY(finalY);
-                        fab.setVisibility(VISIBLE);
                         fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)));
                         fab.setElevation(dp.density * 4);
                         fab.animate().rotationBy(360).setDuration(1000).start();

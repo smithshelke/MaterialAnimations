@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <FrameLayout
+        android:id="@+id/topPanel"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_above="@+id/reveal"
+        android:background="@color/colorPrimaryDark"
+        android:transformPivotY="64dp"
+        android:visibility="invisible" />
+
+    <RelativeLayout
+        android:id="@+id/reveal"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorAccent"
+        android:visibility="invisible" />
+    <!--  <View
+          android:onClick="hideViews"
+          android:id="@+id/bottom_sheet"
+          android:visibility="invisible"
+          android:alpha="0"
+          android:background="@color/colorAccent"
+          android:layout_width="match_parent"
+          android:layout_height="64dp"
+          android:layout_alignParentBottom="true"/>-->
+
+    <LinearLayout
+        android:id="@+id/bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorAccent"
+        android:visibility="invisible">
+
+        <ImageView
+            android:id="@+id/cancelButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/ripple"
+            android:clickable="true"
+            android:focusable="true"
+            android:scaleType="center" />
+
+        <ImageView
+            android:id="@+id/addButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/ripple"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="hideViews"
+            android:scaleType="center" />
+    </LinearLayout>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="animate"
+        android:src="@drawable/ic_add_black_24dp"
+        app:backgroundTint="@color/colorPrimary"
+        app:borderWidth="0dp"
+        app:fabSize="normal"
+        app:rippleColor="@android:color/white" />
+
+</RelativeLayout>
