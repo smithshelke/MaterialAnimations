@@ -2,14 +2,13 @@ package com.example.smith.fabreveal;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Handler;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,8 +19,7 @@ import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnticipateInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
+import android.view.animation.BounceInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -32,31 +30,44 @@ import static android.view.View.VISIBLE;
 public class MainActivity extends AppCompatActivity {
     FloatingActionButton fab;
     DisplayMetrics dp;
-    View reveal, topPanel;
+    View reveal, topPanel, animationLayout, topPanelContent, container;
     ImageView addButton, cancelButton;
-    CoordinatorLayout mCoordinatorLayout;
     LinearLayout bottomSheet;
     boolean isCancel;
     float finalX, finalY, startX, startY;
+    FragmentTransaction fragmentTransaction;
+    FragmentManager fragmentManager;
+    Fragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         reveal = findViewById(R.id.reveal);
+        container = findViewById(R.id.container);
         topPanel = findViewById(R.id.topPanel);
+        topPanelContent = findViewById(R.id.topPanelContent);
         bottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
         addButton = (ImageView) findViewById(R.id.addButton);
         cancelButton = (ImageView) findViewById(R.id.cancelButton);
         fab = (FloatingActionButton) findViewById(R.id.fab);
+        animationLayout = findViewById(R.id.animation_layout);
         dp = getResources().getDisplayMetrics();
         finalX = dp.widthPixels / 2 - (dp.density * 56) / 2;
-        finalY = dp.heightPixels - dp.density * 250 - (dp.density * 56) / 2;
+        finalY = dp.heightPixels - dp.density * 200 - (dp.density * 56) / 2;
     }
 
+    public void onDisplayContentInBottomSheet() {
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragment = new FragmentBarcode();
+        fragmentTransaction.replace(R.id.container, new FragmentBarcode());
+        fragmentTransaction.commit();
+    }
 
     //-----------fab and animations--------------
     public void animate(final View view) {
+        fab.animate().setInterpolator(null);
         if (!isCancel) {
             isCancel = true;
             startX = fab.getX();
@@ -101,7 +112,6 @@ public class MainActivity extends AppCompatActivity {
                                     .x(dp.widthPixels / 2 + dp.widthPixels / 4 - dp.density * 56 / 2)
                                     .setDuration(300)
                                     .start();
-                            cancelButton.setImageResource(R.drawable.ic_close_black_24dp);
                             cancelButton.setX(-500);
                             // cancelButton.animate();
                             cancelButton.animate()
@@ -120,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
                     reveal.setVisibility(View.VISIBLE);
                     reveal.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     Animator animator1 = ViewAnimationUtils.createCircularReveal(reveal, reveal.getWidth() / 2, (int) (finalY - reveal.getY() + dp.density * 56 / 2), dp.density * 56 / 2, reveal.getHeight() * .7f);
+                    animator1.start();
                     topPanel.setScaleY(0f);
                     topPanel.setVisibility(VISIBLE);
                     new Handler().postDelayed(new Runnable() {
@@ -131,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
                                     .start();
                         }
                     }, 250);
-                    animator1.start();
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -142,6 +152,18 @@ public class MainActivity extends AppCompatActivity {
                                     .start();
                         }
                     }, 200);
+
+                    //-----------------All animations have been completed
+                    //-----------------Display content--------------------
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            topPanelContent.setVisibility(View.VISIBLE);
+                            onDisplayContentInBottomSheet();
+                        }
+                    }, 500);
+
+
                 }
             });
             animator.start();
@@ -153,8 +175,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void returnFabToInitialPosition(View view) {
+        fragmentTransaction.remove(fragment);
         isCancel = false;
-        bottomSheet.setVisibility(View.INVISIBLE);
+        hideBottomSheet();
         addButton.setImageResource(0);
         fab.setVisibility(VISIBLE);
 
@@ -170,22 +193,22 @@ public class MainActivity extends AppCompatActivity {
         topPanel.animate()
                 .scaleY(0f)
                 .setDuration(200)
+                .setInterpolator(new AccelerateInterpolator())
                 .start();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                topPanel.setVisibility(View.INVISIBLE);
+                hideTopPanel();
                 Animator reset = ViewAnimationUtils.createCircularReveal(reveal, (int) (finalX + dp.density * 56 / 2), (int) (finalY - reveal.getY() + dp.density * 56 / 2), reveal.getHeight() * .7f, dp.density * 56 / 2);
                 reset.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
-                        reveal.setVisibility(View.INVISIBLE);
-                        //  fab.setX(finalX);
-                        // fab.setY(finalY);
-                        fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)));
-                        fab.setElevation(dp.density * 4);
-                        fab.animate().rotationBy(360).setDuration(1000).start();
+                        hideRevealAndResetFAB();
+                        fab.animate()
+                                .rotationBy(450)
+                                .setDuration(800)
+                                .start();
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -205,11 +228,61 @@ public class MainActivity extends AppCompatActivity {
                                 animator.setInterpolator(new AnticipateInterpolator(.8f));
                                 animator.start();
                             }
-                        }, 1000);
+                        }, 800);
                     }
                 });
                 reset.start();
             }
         }, 200);
+    }
+
+    public void cancelView(View view) {
+        hideBottomSheet();
+        Animator animatorCancel = ViewAnimationUtils.createCircularReveal(animationLayout, (int) (startX + dp.density * 28), (int) (startY + dp.density * 28), reveal.getWidth(), 0);
+        animatorCancel.setInterpolator(new AccelerateDecelerateInterpolator());
+        animatorCancel.start();
+        animatorCancel.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                hideRevealAndResetFAB();
+                revealFAB();
+                hideTopPanel();
+            }
+        });
+    }
+
+    private void hideTopPanel() {
+        topPanel.setVisibility(View.INVISIBLE);
+        topPanelContent.setVisibility(View.INVISIBLE);
+    }
+
+    private void hideBottomSheet() {
+        bottomSheet.setVisibility(View.INVISIBLE);
+        addButton.setImageResource(0);
+    }
+
+    private void hideRevealAndResetFAB() {
+        reveal.setVisibility(View.INVISIBLE);
+        fab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)));
+        fab.setElevation(dp.density * 4);
+    }
+
+    private void revealFAB() {
+        Toast.makeText(this, "revealFab called", Toast.LENGTH_SHORT).show();
+        isCancel = false;
+        fab.setX(startX);
+        fab.setY(startY);
+        fab.setVisibility(VISIBLE);
+        fab.setScaleX(0);
+        fab.setScaleY(0);
+        fab.animate()
+                .scaleXBy(1f)
+                .setDuration(500)
+                .setInterpolator(new BounceInterpolator());
+        fab.animate()
+                .scaleYBy(1f)
+                .setDuration(500)
+                .start();
     }
 }
