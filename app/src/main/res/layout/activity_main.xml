@@ -4,16 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.smith.fabreveal.MainActivity"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    tools:context="com.example.smith.fabreveal.MainActivity">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/layout_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/toolbar" />
+    </android.support.design.widget.CoordinatorLayout>
 
     <FrameLayout
-        android:id="@+id/frame_layout"
+        android:layout_below="@+id/layout_toolbar"
+        android:id="@+id/main_frame_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="4dp" />
+
 
     <include
-        layout="@layout/layout_bottomsheet"
-        android:id="@+id/animation_layout" />
+        android:id="@+id/animation_layout"
+        layout="@layout/layout_bottomsheet" />
 
 </RelativeLayout>

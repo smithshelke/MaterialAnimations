@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout bottomSheet;
     boolean isCancel;
     float finalX, finalY, startX, startY;
-    FragmentTransaction fragmentTransaction;
+    FragmentTransaction fragmentTransaction, fragmentTransaction1;
     FragmentManager fragmentManager;
     Fragment fragment;
 
@@ -55,14 +55,17 @@ public class MainActivity extends AppCompatActivity {
         dp = getResources().getDisplayMetrics();
         finalX = dp.widthPixels / 2 - (dp.density * 56) / 2;
         finalY = dp.heightPixels - dp.density * 200 - (dp.density * 56) / 2;
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.main_frame_layout, new FragmentDashboard());
+        fragmentTransaction.commit();
     }
 
     public void onDisplayContentInBottomSheet() {
-        fragmentManager = getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
         fragment = new FragmentBarcode();
-        fragmentTransaction.replace(R.id.container, new FragmentBarcode());
-        fragmentTransaction.commit();
+        fragmentTransaction1 = fragmentManager.beginTransaction();
+        fragmentTransaction1.replace(R.id.container, new FragmentBarcode());
+        fragmentTransaction1.commit();
     }
 
     //-----------fab and animations--------------
@@ -269,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void revealFAB() {
-        Toast.makeText(this, "revealFab called", Toast.LENGTH_SHORT).show();
+
         isCancel = false;
         fab.setX(startX);
         fab.setY(startY);
