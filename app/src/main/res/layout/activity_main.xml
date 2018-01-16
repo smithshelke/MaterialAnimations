@@ -1,32 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="@android:color/white"
     android:fitsSystemWindows="true"
     tools:context="com.example.smith.fabreveal.MainActivity">
 
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/layout_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <include layout="@layout/toolbar" />
-    </android.support.design.widget.CoordinatorLayout>
-
-    <FrameLayout
-        android:layout_below="@+id/layout_toolbar"
-        android:id="@+id/main_frame_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginStart="4dp" />
-
+    <include layout="@layout/toolbar" />
 
     <include
         android:id="@+id/animation_layout"
         layout="@layout/layout_bottomsheet" />
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

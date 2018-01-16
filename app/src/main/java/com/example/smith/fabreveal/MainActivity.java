@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -43,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         reveal = findViewById(R.id.reveal);
         container = findViewById(R.id.container);
         topPanel = findViewById(R.id.topPanel);
@@ -70,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
     //-----------fab and animations--------------
     public void animate(final View view) {
+        container.setVisibility(View.VISIBLE);
         fab.animate().setInterpolator(null);
         if (!isCancel) {
             isCancel = true;
@@ -179,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void returnFabToInitialPosition(View view) {
         fragmentTransaction.remove(fragment);
+        container.setVisibility(View.INVISIBLE);
         isCancel = false;
         hideBottomSheet();
         addButton.setImageResource(0);
@@ -240,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void cancelView(View view) {
+        container.setVisibility(View.INVISIBLE);
         hideBottomSheet();
         Animator animatorCancel = ViewAnimationUtils.createCircularReveal(animationLayout, (int) (startX + dp.density * 28), (int) (startY + dp.density * 28), reveal.getWidth(), 0);
         animatorCancel.setInterpolator(new AccelerateDecelerateInterpolator());
